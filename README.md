@@ -4,7 +4,7 @@ This project allows you to control your mouse using hand gestures. It uses OpenC
 
 ## Requirements
 
-- Python 3.
+- Python 3.12.3
 - OpenCV
 - MediaPipe
 - PyAutoGUI
