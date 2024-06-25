@@ -67,9 +67,11 @@ python mouse_control.py
 3. The script will open a window displaying the webcam feed. Use the following gestures to control the mouse:
 
 
-- Move your middle finger (ID 12) to move the mouse cursor.
+- Move your index finger to move the mouse cursor.
 
-- Move your thumb (ID 4) close to your index finger to perform a mouse click.
+- Move your thumb close to your index finger to perform a mouse click.
+
+- Move your thumb close to your middle finger to perform a mousedown.
 
 - Press `s` to change webcam
 
