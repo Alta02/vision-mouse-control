@@ -2,8 +2,23 @@ import cv2
 import mediapipe as mp
 import pyautogui
 
+# Switcher variables
+cam = 0
+
+def switch_cam(reset=False):
+    global cam, cap
+
+    cam = cam + 1 if not reset else 0
+    cap.release()
+    cap = initialize_camera(cam)
+
+# Function to initialize webcam
+def initialize_camera(cam_index):
+    cap = cv2.VideoCapture(cam_index)
+    return cap
+
 # Initialize webcam
-cap = cv2.VideoCapture(0)
+cap = initialize_camera(cam)
 
 # Initialize MediaPipe Hand Detector
 hand_detector = mp.solutions.hands.Hands()
@@ -14,7 +29,7 @@ drawing_utils = mp.solutions.drawing_utils
 # Get screen size
 screen_width, screen_height = pyautogui.size()
 
-middle_y = 0  # Initialize index finger y-coordinate
+middle_y = 0  # Initialize middle finger y-coordinate
 
 while True:
     # Capture frame from webcam
@@ -24,7 +39,11 @@ while True:
     frame = cv2.flip(frame, 1)
     
     # Get frame dimensions
-    frame_height, frame_width, _ = frame.shape
+    try:
+        frame_height, frame_width, _ = frame.shape
+    except AttributeError:
+        switch_cam(reset=True)
+        continue
     
     # Convert the frame to RGB
     rgb_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
@@ -45,7 +64,7 @@ while True:
                 y = int(landmark.y * frame_height)
                 
                 if id == 12:  # Middle finger tip
-                    # Draw a circle at the index finger tip
+                    # Draw a circle at the middle finger tip
                     cv2.circle(img=frame, center=(x, y), radius=10, color=(0, 255, 255))
                     
                     # Map middle finger coordinates to screen coordinates
@@ -64,7 +83,7 @@ while True:
                     thumb_y = screen_height / frame_height * y
                     
                     # Print the distance between middle finger and thumb
-                    print("Distance between index and thumb:", abs(middle_y - thumb_y))
+                    # print("Distance between middle finger and thumb:", abs(middle_y - thumb_y))
                     
                     # Perform a click if the middle finger and thumb are close
                     if abs(middle_y - thumb_y) < 20:
@@ -75,9 +94,12 @@ while True:
     cv2.imshow("Hand Gesture Mouse Control", frame)
     
     # Exit the loop if 'q' is pressed
-    tombol = cv2.waitKey(1) & 0xFF
-    if tombol == ord('q'):
+    key = cv2.waitKey(1) & 0xFF
+    if key == ord('q'):
         break
+    elif key == ord('s'):
+        switch_cam()
+        print(f"Switched to camera {cam}")
 
 # Release the webcam and close all OpenCV windows
 cap.release()
