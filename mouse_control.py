@@ -19,7 +19,7 @@ def isColliding(a_xys: tuple, b_xys: tuple, xy: tuple = None) -> bool:
     b_bottom = by + (b_size / 2)
     
     # Check for collision when touching
-    touching_condition = (a_right >= b_left and a_left <= b_right and a_bottom >= b_top and a_top <= b_bottom)
+    touching_condition = ((a_right >= b_left and a_left <= b_right) or (a_bottom >= b_top and a_top <= b_bottom))
     
     return touching_condition
 
@@ -102,20 +102,20 @@ while True:
                     pyautogui.moveTo(indexF_x, indexF_y)
 
                 if id == 12:  # Middle finger tip
-                    cv2.circle(img=frame, center=(x, y), radius=10, color=(0, 255, 255))
+                    cv2.circle(img=frame, center=(x, y), radius=10, color=(0, 155, 165))
                     middle_x = screen_width / frame_width * x
                     middle_y = screen_height / frame_height * y
                 
                 if id == 4:  # Thumb tip
-                    cv2.circle(img=frame, center=(x, y), radius=10, color=(0, 255, 255))
+                    cv2.circle(img=frame, center=(x, y), radius=10, color=(0, 255, 255)) #make it 20, thumb's bigger
                     thumb_x = screen_width / frame_width * x
                     thumb_y = screen_height / frame_height * y
 
                     # Perform a click if the middle finger and thumb are close
                     if thumb_x and middle_x and indexF_x:
-                        if isColliding(a_xys=(middle_x, middle_y, 30), b_xys=(thumb_x, thumb_y, 30)):
+                        if isColliding(a_xys=(middle_x, middle_y, 10), b_xys=(thumb_x, thumb_y, 20)):
                             pyautogui.mouseDown()
-                        elif isColliding(a_xys=(indexF_x, indexF_y, 30), b_xys=(thumb_x, thumb_y, 30)):
+                        elif isColliding(a_xys=(indexF_x, indexF_y, 10), b_xys=(thumb_x, thumb_y, 20)):
                             pyautogui.click()
                             pyautogui.sleep(1)
                         else:
